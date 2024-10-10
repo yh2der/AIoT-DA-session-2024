@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression Model Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-section, .result-section {
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Regression Model Selector</h1>
+        <div class="form-section">
+            <h3>Choose Features for Linear Regression:</h3>
+            <form action="/result" method="post">
+                {% for column in feature_columns %}
+                    <input type="checkbox" name="features" value="{{ column }}">{{ column }}<br>
+                {% endfor %}
+                <input type="submit" value="Run Linear Regression" class="btn">
+            </form>
+        </div>
+        
+        <div class="result-section">
+            <h3>Auto Regression Model Results</h3>
+            <p><b>Auto Regression MSE:</b> {{ ar_mse }}</p>
+            <p><b>Auto Regression R²:</b> {{ ar_r2 }}</p>
+            <img src="data:image/png;base64,{{ ar_plot_url }}" alt="Auto Regression Prediction Plot"/>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Regression Model Results</h1>
+        <p><b>Selected Features:</b> {{ features }}</p>
+        <p><b>MSE (Linear Regression):</b> {{ mse }}</p>
+        <p><b>R-squared (Linear Regression):</b> {{ r2 }}</p>
+        <h3>Linear Regression Prediction Plot</h3>
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Linear Regression Prediction Plot"/>
+        
+        <h3>Auto Regression Model Prediction Plot</h3>
+        <img src="data:image/png;base64,{{ ar_plot_url }}" alt="Auto Regression Prediction Plot"/>
+        
+        <br><br>
+        <a href="/" class="btn">Back to Model Selection</a>
+    </div>
+</body>
+</html>

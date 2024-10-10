@@ -1,83 +1,84 @@
 # AIoT-DA-Session-2024
 This repo will consist of homework of "Artificial Intelligence of Things"
 
-## Set-up (pipenv)
-1. 安裝 Pipenv（如果尚未安裝）
-   ```
-   pip install pipenv
-   ```
+## Anaconda 安裝和 Conda 虛擬環境使用指南
 
-2. 創建項目目錄
-   ```
-   mkdir AIoT-DA-Session
-   cd AIoT-DA-Session
-   ```
+## 1. 下載和安裝 Anaconda
 
-3. 初始化 Pipenv 環境 (會抓最新的 python)
-   ```
-   pipenv --python 3
-   ```
-   注意：將 3.8 替換為你想使用的 Python 版本。
+### 1.1 下載 Anaconda
+1. 訪問 [Anaconda 官方網站](https://www.anaconda.com/products/distribution)
+2. 選擇適合你操作系統的版本（Windows、macOS 或 Linux）
 
-4. 安裝必要的包 (或是你會用到的)
-   ```
-   pipenv install numpy pandas scikit-learn matplotlib
-   ```
+### 1.2 安裝 Anaconda
+- **Windows**:
+  1. 運行下載的 .exe 文件
+  2. 按照安裝向導的指示進行操作
 
-## 使用虛擬環境
+- **macOS**:
+  1. 打開下載的 .pkg 文件
+  2. 按照指示安裝
 
-5. 啟動虛擬環境
-   ```
-   pipenv shell
-   ```
+- **Linux**:
+  1. 打開終端
+  2. 運行以下命令（替換 `path_to_file` 為實際文件路徑）:
+     ```
+     bash ~/path_to_file/Anaconda3-2023.XX-Linux-x86_64.sh
+     ```
+  3. 按照提示完成安裝
 
-6. 運行 Python 腳本
-   ```
-   python your_script.py
-   ```
+### 1.3 驗證安裝
+安裝完成後，打開新的終端窗口，運行:
+```
+conda --version
+```
+如果顯示 conda 的版本號，說明安裝成功。
 
-7. 退出虛擬環境
-   ```
-   exit
-   ```
+### 1.4 初始化 conda
+在某些系統中，你可能需要初始化 conda。在終端中運行:
+```
+conda init
+```
+然後重新啟動終端。
 
-## 管理虛擬環境內容
-8. 查看已安裝的包
-   ```
-   pipenv graph
-   ```
+## 2. 使用 Conda 虛擬環境
 
-9. 安裝新的包
-   ```
-   pipenv install <package_name>
-   ```
+### 2.1 創建新的虛擬環境
+```
+conda create --name myenv python=3.8
+```
+這會創建一個名為 "myenv" 的新環境，使用 Python 3.8。
 
-10. 更新特定包
-    ```
-    pipenv update <package_name>
-    ```
+### 2.2 激活虛擬環境
+```
+conda activate myenv
+```
 
-11. 移除包
-    ```
-    pipenv uninstall <package_name>
-    ```
+### 2.3 在虛擬環境中安裝包
+```
+conda install package_name
+```
 
-## 常用技巧
-- 在不激活環境的情況下運行命令：
-  ```
-  pipenv run python your_script.py
-  ```
+### 2.4 查看已安裝的包
+```
+conda list
+```
 
-## 注意事項
-- 確保將 `Pipfile` 和 `Pipfile.lock` 包含在版本控制中。
-- 使用 `.gitignore` 排除 `.venv/` 目錄。
-- 每次開始工作時，記得先激活虛擬環境。
-- 如果遇到權限問題，嘗試添加 `--user` 標誌：`pip install --user pipenv`
+### 2.5 退出虛擬環境
+```
+conda deactivate
+```
 
-## 故障排除
-如果遇到問題：
-1. 確保使用的是最新版本的 Pipenv。
-2. 嘗試刪除 `.venv/` 目錄並重新創建環境。
-3. 檢查 Python 版本兼容性。
+### 2.6 刪除虛擬環境
+```
+conda remove --name myenv --all
+```
 
-遇到無法解決的問題，可以查閱 [Pipenv 官方文檔](https://pipenv.pypa.io/) 或尋求社群幫助。
+### 2.7 列出所有虛擬環境
+```
+conda env list
+```
+
+## 3. 提示和技巧
+
+- 創建環境時指定 Python 版本很重要，因為不同的專案可能需要不同的 Python 版本。
+- 在激活環境後安裝包，確保包只安裝在特定環境中，不影響其他環境。
