@@ -49,3 +49,6 @@ I want you to modify the code not allow to adjust b in ax+b and just show where 
 ![alt text](/Hw1-1/process-pics/image-20.png)
 ![alt text](/Hw1-1/process-pics/image-21.png)
 ![alt text](/Hw1-1/process-pics/image-22.png)
+
+## Result
+![alt text](image.png)
