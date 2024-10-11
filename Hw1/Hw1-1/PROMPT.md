@@ -51,4 +51,4 @@ I want you to modify the code not allow to adjust b in ax+b and just show where 
 ![alt text](process-pics/image-22.png)
 
 ## Result
-![alt text](image.png)
+![alt text](process-pics/result.png)
