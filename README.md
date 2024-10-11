@@ -1,6 +1,13 @@
 # AIoT-DA-Session-2024
 This repo will consist of homework of "Artificial Intelligence of Things"
 
+## 作業連結
+- [Hw1](./Hw1)
+  - [Hw1-1](./Hw1/Hw1-1)
+  - [Hw1-1_prompt](./Hw1/Hw1-1/PROMPT.md)
+  - [Hw1-2](./Hw1/Hw1-2)
+  - [Hw1-1_prompt](./Hw1/Hw1-2/PROMPT.md)
+
 ## Anaconda 安裝和 Conda 虛擬環境使用指南
 
 ## 1. 下載和安裝 Anaconda

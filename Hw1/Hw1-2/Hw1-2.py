@@ -13,7 +13,7 @@ import numpy as np
 app = Flask(__name__)
 
 # 加載數據
-data = pd.read_csv("2330-training.csv")
+data = pd.read_csv("data/2330-training.csv")
 data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']] = data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']].replace({',': ''}, regex=True)
 data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']] = data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']].apply(pd.to_numeric)
 data['Date'] = pd.to_datetime(data['Date'], format='%m/%d/%Y')
