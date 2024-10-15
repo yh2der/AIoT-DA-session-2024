@@ -3,7 +3,7 @@
 ## First Prompt
 I want you be an expert on linear regression and website designer, to solve a simple linear regression problem which is following CRISP-DM and must have comment in code. In addition, user can modify a in ax+b, noise and number of points. Lastly, demo with python flask !
 
-## AI Respond
+## AI responses
 ![alt text](process-pics/image.png)
 ![alt text](process-pics/image-1.png)
 ![alt text](process-pics/image-2.png)
@@ -16,7 +16,7 @@ I want you be an expert on linear regression and website designer, to solve a si
 perfect!
 could you make UI looks better?
 
-## AI second respond
+## AI second responses
 ![alt text](process-pics/image-7.png)
 ![alt text](process-pics/image-8.png)
 ![alt text](process-pics/image-9.png)
@@ -35,14 +35,14 @@ and it cause
 RuntimeError: main thread is not in main loop
 Tcl_AsyncDelete: async handler deleted by the wrong thread
 
-## AI Respond
+## AI responses
 ![alt text](process-pics/image-15.png)
 ![alt text](process-pics/image-16.png)
 
 ## Fourth Prompt
 I want you to modify the code not allow to adjust b in ax+b and just show where are modified
 
-## AI Respond
+## AI responses
 ![alt text](process-pics/image-17.png)
 ![alt text](process-pics/image-18.png)
 ![alt text](process-pics/image-19.png)
