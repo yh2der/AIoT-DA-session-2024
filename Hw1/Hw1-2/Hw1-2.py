@@ -1,98 +1,144 @@
-from flask import Flask, render_template, request
 import pandas as pd
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
-from statsmodels.tsa.ar_model import AutoReg
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, Lasso
+from sklearn.feature_selection import RFECV
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+import io
+import base64
+from flask import Flask, render_template
 
-# 初始化 Flask 應用
+# CRISP-DM Step 1: Business Understanding
+# Objective: Compare Lasso and RFECV for feature selection in Boston housing price prediction
+
+# CRISP-DM Step 2: Data Understanding
+# Load the Boston Housing dataset
+url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
+data = pd.read_csv(url)
+X = data.drop('medv', axis=1)
+y = data['medv']
+
+# CRISP-DM Step 3: Data Preparation
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale the features
+scaler = StandardScaler()
+X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns)
+X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
+
+# Function to train and evaluate model
+def train_and_evaluate(X_train, X_test, y_train, y_test, features):
+    X_train_subset = X_train[features]
+    X_test_subset = X_test[features]
+    
+    model = LinearRegression()
+    model.fit(X_train_subset, y_train)
+    
+    y_pred = model.predict(X_test_subset)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    
+    return rmse, r2
+
+# CRISP-DM Step 4: Modeling
+# Lasso Feature Selection with tracking
+def lasso_feature_selection(X, y, alpha=0.1):
+    lasso = Lasso(alpha=alpha)
+    lasso.fit(X, y)
+    importance = pd.Series(abs(lasso.coef_), index=X.columns).sort_values(ascending=False)
+    selected_features = []
+    results = []
+    
+    for i in range(1, len(X.columns) + 1):
+        features = importance.nlargest(i).index.tolist()
+        selected_features.append(features[-1])  # Add the newly selected feature
+        rmse, r2 = train_and_evaluate(X, X_test_scaled, y, y_test, features)
+        results.append({
+            'num_features': i,
+            'features': ', '.join(features),
+            'rmse': rmse,
+            'r2': r2
+        })
+    
+    return pd.DataFrame(results), selected_features
+
+# RFECV Feature Selection with tracking
+def rfecv_feature_selection(X, y):
+    estimator = LinearRegression()
+    selector = RFECV(estimator, step=1, cv=5)
+    selector = selector.fit(X, y)
+    importance = pd.Series(selector.ranking_, index=X.columns).sort_values()
+    selected_features = []
+    results = []
+    
+    for i in range(1, len(X.columns) + 1):
+        features = importance.nsmallest(i).index.tolist()
+        selected_features.append(features[-1])  # Add the newly selected feature
+        rmse, r2 = train_and_evaluate(X, X_test_scaled, y, y_test, features)
+        results.append({
+            'num_features': i,
+            'features': ', '.join(features),
+            'rmse': rmse,
+            'r2': r2
+        })
+    
+    return pd.DataFrame(results), selected_features
+
+# Run feature selection methods
+lasso_results, lasso_features = lasso_feature_selection(X_train_scaled, y_train)
+rfecv_results, rfecv_features = rfecv_feature_selection(X_train_scaled, y_train)
+
+# CRISP-DM Step 5: Evaluation
+# The evaluation is performed within the feature selection functions and results are stored in lasso_results and rfecv_results
+
+# CRISP-DM Step 6: Deployment
+# Create Flask app for deployment
 app = Flask(__name__)
 
-# 加載數據
-data = pd.read_csv("data/2330-training.csv")
-data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']] = data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']].replace({',': ''}, regex=True)
-data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']] = data[['y', 'x1', 'x2', 'x3', 'x4', 'x5']].apply(pd.to_numeric)
-data['Date'] = pd.to_datetime(data['Date'], format='%m/%d/%Y')
-
-# 特徵和目標變量
-X = data[['x1', 'x2', 'x3', 'x4', 'x5']]
-y = data['y']
-
-# Auto Regression 模型構建
-y_series = data['y']
-ar_model = AutoReg(y_series, lags=5).fit()
-ar_mse = mean_squared_error(y_series[-10:], ar_model.predict(start=len(y_series) - 10, end=len(y_series) - 1, dynamic=False))
-ar_r2 = r2_score(y_series[-10:], ar_model.predict(start=len(y_series) - 10, end=len(y_series) - 1, dynamic=False))
-
-# 預測未來 10 個步長
-future_steps = 10
-future_predictions = ar_model.predict(start=len(y_series), end=len(y_series) + future_steps - 1, dynamic=False)
-
-# 生成 Auto Regression 結果圖表（包含未來趨勢）
-ar_fig, ar_ax = plt.subplots()
-y_ar_pred = ar_model.predict(start=len(y_series) - 10, end=len(y_series) - 1, dynamic=False)
-ar_ax.plot(y_series.index, y_series, label='Actual', color='blue')
-ar_ax.plot(y_series[-10:].index, y_ar_pred, label='Predicted', linestyle='--', color='red')
-
-# 添加未來預測的趨勢（使用綠色）
-future_index = np.arange(len(y_series), len(y_series) + future_steps)
-ar_ax.plot(future_index, future_predictions, label='Future Prediction', linestyle='--', color='green')
-
-ar_ax.set_title('Auto Regression Model Results with Future Predictions')
-ar_ax.set_xlabel('Time Index')
-ar_ax.set_ylabel('Value')
-ar_ax.legend()
-
-# 圖片轉換為字符串格式
-ar_buffer = BytesIO()
-plt.savefig(ar_buffer, format="png")
-ar_buffer.seek(0)
-ar_image_png = ar_buffer.getvalue()
-ar_buffer.close()
-ar_plot_url = base64.b64encode(ar_image_png).decode('utf-8')
-
-# 主頁面，提供多種模型選擇並顯示 Auto Regression 圖表
 @app.route('/')
 def index():
-    return render_template('index.html', feature_columns=X.columns, ar_mse=ar_mse, ar_r2=ar_r2, ar_plot_url=ar_plot_url)
-
-# 處理模型選擇與結果展示
-@app.route('/result', methods=['POST'])
-def result():
-    selected_features = request.form.getlist('features')
-    X_subset = X[selected_features]
-
-    # 建立多元線性回歸模型
-    X_train, X_test, y_train, y_test = train_test_split(X_subset, y, test_size=0.2, random_state=42)
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-
-    # 模型評估
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-
-    # 繪製多元線性回歸預測圖表
-    fig, ax = plt.subplots()
-    ax.scatter(y_test, y_pred, edgecolors=(0, 0, 0))
-    ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
-    ax.set_xlabel('Actual')
-    ax.set_ylabel('Predicted')
-    ax.set_title(f'Linear Regression with Features: {selected_features}')
+    # Create RMSE vs Number of Features plot
+    plt.figure(figsize=(12, 6))
+    plt.plot(lasso_results['num_features'], lasso_results['rmse'], marker='o', label='Lasso')
+    plt.plot(rfecv_results['num_features'], rfecv_results['rmse'], marker='s', label='RFECV')
+    plt.title('RMSE vs Number of Features: Lasso vs RFECV')
+    plt.xlabel('Number of Features')
+    plt.ylabel('RMSE')
+    plt.legend()
+    plt.grid(True)
     
-    # 圖片轉換為字符串格式，嵌入到 HTML 中
-    buffer = BytesIO()
-    plt.savefig(buffer, format="png")
+    # Save plot to base64 string
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
     buffer.seek(0)
-    image_png = buffer.getvalue()
-    buffer.close()
-    plot_url = base64.b64encode(image_png).decode('utf-8')
-    
-    return render_template('result.html', mse=mse, r2=r2, plot_url=plot_url, features=selected_features, ar_plot_url=ar_plot_url)
+    plot_data = base64.b64encode(buffer.getvalue()).decode()
+    plt.close()
+
+    # Prepare data for HTML tables
+    lasso_table = lasso_results.to_html(classes='table table-striped', index=False)
+    rfecv_table = rfecv_results.to_html(classes='table table-striped', index=False)
+
+    # Prepare final comparison
+    lasso_final = lasso_results.iloc[-1]
+    rfecv_final = rfecv_results.iloc[-1]
+    comparison = pd.DataFrame({
+        'Method': ['Lasso', 'RFECV'],
+        'RMSE': [lasso_final['rmse'], rfecv_final['rmse']],
+        'R2': [lasso_final['r2'], rfecv_final['r2']],
+        'Selected Features': [lasso_final['features'], rfecv_final['features']]
+    })
+    comparison_table = comparison.to_html(classes='table table-striped', index=False)
+
+    return render_template('index.html', 
+                           plot_data=plot_data, 
+                           lasso_table=lasso_table, 
+                           rfecv_table=rfecv_table,
+                           comparison_table=comparison_table,
+                           lasso_features=", ".join(lasso_features),
+                           rfecv_features=", ".join(rfecv_features))
 
 if __name__ == '__main__':
     app.run(debug=True)
