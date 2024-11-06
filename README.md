@@ -8,7 +8,9 @@ This repo will consist of homework of "Artificial Intelligence of Things"
   - [Hw1-2](./Hw1/Hw1-2)
   - [Hw1-2_prompt](./Hw1/Hw1-2/PROMPT.md)
 - [Hw2](./Hw2)
-  - [Result](./Hw2/RESULT.md)  
+  - [Result](./Hw2/RESULT.md)
+- [Hw3](./Hw3)
+  - [Result](./Hw3/RESULT.md)
 
 ## Anaconda 安裝和 Conda 虛擬環境使用指南
 
