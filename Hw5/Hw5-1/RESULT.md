@@ -1,9 +1,9 @@
-# The Result of HW4-1
-## 性能評估
+# The result of Hw5-1
+## Model 架構
 ![alt text](./pics/image.png)
 
-## 時間性能比較
+## 最後幾筆訓練結果
 ![alt text](./pics/image-1.png)
 
-## 預測結果範例
+## 結果圖
 ![alt text](./pics/image-2.png)
