@@ -13,6 +13,7 @@ This repo will consist of homework of "Artificial Intelligence of Things"
   - [Result](./Hw3/RESULT.md)
 - [Hw4](./Hw4/)
 - [Hw5](./Hw5/)
+- [Hw6](./Hw6/)
 
 ## Anaconda 安裝和 Conda 虛擬環境使用指南
 
