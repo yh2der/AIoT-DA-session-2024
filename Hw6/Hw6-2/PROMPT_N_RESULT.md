@@ -1,7 +1,11 @@
 # Result 
+## My model
 ![alt text](./pics/image-17.png)
 ![alt text](./pics/image-15.png)
 ![alt text](./pics/image-16.png)
+
+## hugging face
+![alt text](./pics/image.png)
 
 # Prompt
 ![alt text](./pics/image.png)
